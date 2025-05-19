@@ -12,7 +12,7 @@
 
 #include "get_next_line.h"
 
-char	*move_cache(char *cache, char *newptr)
+char	*move_cache(char *cache, char *newptr) 
 {
 	char	*newcache;
 
