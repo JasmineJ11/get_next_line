@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   get_next_line_utils.c                              :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jiawli <jiawli@student.hive.fi>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/18 12:51:42 by jiawli            #+#    #+#             */
-/*   Updated: 2025/05/18 12:51:45 by jiawli           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "get_next_line.h"
 
 char	*ft_strdup(const char *s)
@@ -85,12 +73,8 @@ char	*ft_strjoin(char const *s1, char const *s2)
 
 	s1_len = 0;
 	s2_len = 0;
-	if (!s1 && !s2)
+	if (!s1 || !s2)
 		return (NULL);
-	if (!s1)
-		return (ft_strdup(s2));
-	if (!s2)
-		return (ft_strdup(s1));
 	while (s1[s1_len])
 		s1_len++;
 	while (s2[s2_len])
@@ -106,9 +90,9 @@ char	*ft_strjoin(char const *s1, char const *s2)
 
 char	*ft_strchr(const char *s, int c)
 {
-	unsigned char	*str;
-	unsigned char	chr;
-	size_t			i;
+	unsigned char *str;
+	unsigned char chr;
+	size_t i;
 
 	str = (unsigned char *)s;
 	chr = (unsigned char)c;

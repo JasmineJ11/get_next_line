@@ -29,7 +29,7 @@ char	*extractLine(char *cache, char *newPtr)
 	size_t	lineLen;
 	char	*line;
 
-	if (cache == NULL || cache[0] == '\0')
+	if (cache == NULL)
 		return (NULL);
 	if (newPtr != NULL)
 	{
@@ -58,6 +58,8 @@ static char	*getCache(int fd, char *cache)
 				buffer, BUFFER_SIZE)) > 0)
 	{
 		buffer[byteRead] = '\0';
+		if (cache == NULL)
+			cache = ft_strdup("");
 		temp = cache;
 		cache = ft_strjoin(cache, buffer);
 		free(temp);
@@ -65,7 +67,7 @@ static char	*getCache(int fd, char *cache)
 	free(buffer);
 	if (byteRead == -1)
 		return (free(buffer), free(cache), NULL);
-	if (cache == NULL || cache[0] == '\0')
+	if (cache == NULL || cache[0] == '\0') 
 		return (free(cache), NULL);
 	return (cache);
 }
@@ -89,25 +91,32 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-int	main(void)
-{
-	int		fd;
-	char	*nextLine;
+// # include <stdio.h>
+// # include <fcntl.h>
+// int	main(void)
+// {
+// 	int fd;
+// 	char *nextLine;
 
-	fd = open("data.txt", O_RDONLY);
-	if (fd == -1)
-	{
-		return (1);
-	}
-	while (1)
-	{
-		nextLine = get_next_line(fd);
-		if (nextLine == NULL)
-			break ;
-		printf("%s", nextLine);
-		free(nextLine);
-		nextLine = NULL;
-	}
-	close(fd);
-	return (0);
-}
+// 	fd = open("data.txt", O_RDONLY);
+// 	if (fd == -1)
+// 	{
+// 		return (1);
+// 	}
+
+// 	while (1)
+// 	{
+// 		nextLine = get_next_line(fd);
+
+// 		if (nextLine == NULL)
+// 			break ;
+
+// 		printf("%s\n", nextLine);
+
+// 		free(nextLine);
+
+// 		nextLine = NULL;
+// 	}
+// 	close(fd);
+// 	return (0);
+// }

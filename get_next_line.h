@@ -6,8 +6,6 @@
 #  define BUFFER_SIZE 3
 # endif
 
-# include <fcntl.h>
-# include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
 
