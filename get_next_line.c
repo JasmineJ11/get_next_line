@@ -12,29 +12,29 @@
 
 #include "get_next_line.h"
 
-char	*moveCache(char *cache, char *newPtr)
+char	*move_cache(char *cache, char *newptr)
 {
-	char	*newCache;
+	char	*newcache;
 
-	if (cache == NULL || newPtr == NULL)
+	if (cache == NULL || newptr == NULL)
 		return (free(cache), NULL);
-	newCache = ft_strdup(newPtr + 1);
+	newcache = ft_strdup(newptr + 1);
 	free(cache);
 	cache = NULL;
-	return (newCache);
+	return (newcache);
 }
 
-char	*extractLine(char *cache, char *newPtr)
+char	*extract_line(char *cache, char *newptr)
 {
-	size_t	lineLen;
+	size_t	linelen;
 	char	*line;
 
 	if (cache == NULL)
 		return (NULL);
-	if (newPtr != NULL)
+	if (newptr != NULL)
 	{
-		lineLen = (newPtr - cache) + 1;
-		line = ft_substr(cache, 0, lineLen);
+		linelen = (newptr - cache) + 1;
+		line = ft_substr(cache, 0, linelen);
 		return (line);
 	}
 	else
@@ -44,31 +44,37 @@ char	*extractLine(char *cache, char *newPtr)
 	}
 }
 
-static char	*getCache(int fd, char *cache)
+char	*safe_free(char **ptr)
+{
+	free(*ptr);
+	*ptr = NULL;
+	return (NULL);
+}
+
+static char	*get_cache(int fd, char *cache)
 {
 	char	*buffer;
-	int		byteRead;
-	char	*temp;
+	int		byteread;
 
 	buffer = malloc((BUFFER_SIZE + 1));
 	if (buffer == NULL)
 		return (free(cache), cache = NULL, NULL);
-	byteRead = 1;
-	while ((cache == NULL || !ft_strchr(cache, '\n')) && (byteRead = read(fd,
-				buffer, BUFFER_SIZE)) > 0)
+	byteread = 0;
+	while ((cache == NULL || !ft_strchr(cache, '\n')))
 	{
-		buffer[byteRead] = '\0';
+		byteread = read(fd, buffer, BUFFER_SIZE);
+		if (byteread <= 0)
+			break ;
+		buffer[byteread] = '\0';
 		if (cache == NULL)
 			cache = ft_strdup("");
-		temp = cache;
 		cache = ft_strjoin(cache, buffer);
-		free(temp);
 	}
-	free(buffer);
-	if (byteRead == -1)
+	safe_free(&buffer);
+	if (byteread == -1)
 		return (free(buffer), free(cache), NULL);
-	if (cache == NULL || cache[0] == '\0') 
-		return (free(cache), NULL);
+	if (cache == NULL || cache[0] == '\0')
+		return (safe_free(&cache));
 	return (cache);
 }
 
@@ -76,47 +82,17 @@ char	*get_next_line(int fd)
 {
 	char		*line;
 	static char	*cache;
-	char		*newPtr;
+	char		*newptr;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	cache = getCache(fd, cache);
+	cache = get_cache(fd, cache);
 	if (!cache)
 		return (NULL);
-	newPtr = ft_strchr(cache, '\n');
-	line = extractLine(cache, newPtr);
+	newptr = ft_strchr(cache, '\n');
+	line = extract_line(cache, newptr);
 	if (!line)
 		return (free(cache), cache = NULL, NULL);
-	cache = moveCache(cache, newPtr);
+	cache = move_cache(cache, newptr);
 	return (line);
 }
-
-// # include <stdio.h>
-// # include <fcntl.h>
-// int	main(void)
-// {
-// 	int fd;
-// 	char *nextLine;
-
-// 	fd = open("data.txt", O_RDONLY);
-// 	if (fd == -1)
-// 	{
-// 		return (1);
-// 	}
-
-// 	while (1)
-// 	{
-// 		nextLine = get_next_line(fd);
-
-// 		if (nextLine == NULL)
-// 			break ;
-
-// 		printf("%s\n", nextLine);
-
-// 		free(nextLine);
-
-// 		nextLine = NULL;
-// 	}
-// 	close(fd);
-// 	return (0);
-// }
